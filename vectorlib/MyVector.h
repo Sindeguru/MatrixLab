@@ -12,15 +12,16 @@ class Vector
 {
 protected:
   int length;
+  int si;
   T* x;
 public:
   Vector<T>* vec;
   //Конструкторы
   Vector();
   //Vector(T _v);
-  Vector(int _v);
+  Vector(int _v, int _si);
   Vector(int rowsCount, T* _v);
-  Vector(int rowsCount, T _v);
+  //Vector(int rowsCount, T _v);
   Vector(Vector<T>& _v);
   ~Vector();
 
@@ -60,13 +61,15 @@ Vector<T>::Vector()
 {
   length = 0;
   x = 0;
+  si = 0;
 }
 
 template <class T>
-Vector<T>::Vector(int _v)
+Vector<T>::Vector(int _v, int _si)
 {
   length = _v;
   x = new T[length];
+  si = _si;
   //x[0] = _v;
 }
 template <class T>
@@ -77,15 +80,19 @@ Vector<T>::Vector(int rowsCount, T* _v)
   x = new T[length];
   for (int i = 0; i < length; i++)
     x[i] = _v[i];
+  si = 0;
 }
-template <class T>
+/*template <class T>
+
 Vector<T>::Vector(int rowsCount, T _v)
 {
   length = rowsCount;
   x = new T[length];
   for (int i = 0; i < length; i++)
     x[i] = _v;
+  si = 0;
 }
+*/
 template <class T>
 Vector<T>::Vector(Vector<T>& _v)
 {
@@ -93,6 +100,7 @@ Vector<T>::Vector(Vector<T>& _v)
   x = new T[length];
   for (int i = 0; i < length; i++)
     x[i] = _v.x[i];
+  si = _v.si;
 }
 template <class T>
 Vector<T>::~Vector()
@@ -207,9 +215,9 @@ inline int Vector<T>::operator!=(Vector<T>& _v)
 template <class T>
 T& Vector<T>::operator[] (const int index)
 {
-  if ((index >= 0) && (index < length))
-    return x[index];
-  return x[0];
+  if ((index-si >= 0) && (index-si < length))
+    return x[index-si];
+  throw logic_error("Out of Range");
 }
 
 template <class T>

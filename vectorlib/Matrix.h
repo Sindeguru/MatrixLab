@@ -11,6 +11,7 @@ class TMatrix : public Vector<Vector<T>>
 {
 protected:
   Vector<T>* arr;
+
 public:
   TMatrix(int s = 3);
   TMatrix(int s, T el);
@@ -44,10 +45,11 @@ template<class T>
 inline TMatrix<T>::TMatrix(int s) : Vector<Vector<T>>(s)
 {
   if ((s < 0) || (s > MAX_MATRIX_SIZE)) throw logic_error("Incorrect");
-  Vector<T> v(s, 0);
-  arr = new Vector<T>[s];
+  arr = new Vector<Vector<T>>[s];
+  length = s;
   for (int i = 0; i < s; i++)
   {
+    Vector<T> v(s - i, i);
     arr[i] = v;
   }
 }
@@ -56,10 +58,10 @@ template<class T>
 inline TMatrix<T>::TMatrix(int s, T el) : Vector<Vector<T>>(s)
 {
   if ((s < 0) || (s > MAX_MATRIX_SIZE)) throw logic_error("Incorrect");
-  Vector<T> v(s, el);
   arr = new Vector<T>[s];
   for (int i = 0; i < s; i++)
   {   
+    Vector<T> v(s - i, i);
     arr[i] = v;
     for (int j = 0; j < i; j++)
       arr[i].SetElem(j, 0);
@@ -70,10 +72,12 @@ inline TMatrix<T>::TMatrix(int s, T el) : Vector<Vector<T>>(s)
 template<class T>
 inline TMatrix<T>::TMatrix(TMatrix<T>& A) : Vector<Vector<T>>(A)
 {
-  for (int i = 0; i < (*this).GetLength(); i++)
+  length = A.length; 
+
+  arr = new Vector<T>[length];
+  for (int i = 0; i < length; i++)
   {
-    Vector<T>A(A[i]);
-    (*this)[i] = A;
+    arr[i] = A.arr[i];
   }
   /*
   Vector<T> v(A.GetLength(), 0);
@@ -106,10 +110,24 @@ inline T TMatrix<T>::GetObj(int a, int b)
 template<class T>
 inline TMatrix<T>& TMatrix<T>::operator=(const TMatrix<T>& A)
 {
-  if (this != &A)
+  /*if (this != &A)
   {
     Vector<Vector<T>>:: operator= (A);
+  }*/
+
+
+  for (int i = 0; i < length; i++)
+    arr[i].~Vector();
+  delete[] arr;
+
+  length = A.length;
+
+  arr = new Vector<T>[length];
+  for (int i = 0; i < length; i++)
+  {
+    arr[i] = A.arr[i];
   }
+
   return *this;
 }
 
