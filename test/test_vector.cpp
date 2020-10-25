@@ -15,10 +15,11 @@ TEST(Vector, create_empty_vector)
 
 TEST(Vector, single_element_vector)
 {
-	Vector<int>v1(1,3);
-	EXPECT_EQ(3, v1.GetElem(0));
+	Vector<int>v1(1,0);
+	EXPECT_EQ(0, v1.GetElem(0));
 	EXPECT_EQ(1, v1.GetLength());
 }
+
 TEST(Vector, set_elem_in_position)
 {
 	Vector<int> v1(3, 3);
@@ -44,12 +45,16 @@ TEST(Vector, create_vector_use_massiv)
 {
 	int* a;
 	a = new int[3];
-	a[0] = 3;
-	a[1] = 3;
+	a[0] = 1;
+	a[1] = 2;
 	a[2] = 3;
-	Vector<int> v(3, a);
-	Vector<int> v1(3, 3);
-	EXPECT_EQ(1, v == v1);
+	Vector<int> v(3);
+	v.SetElem(0, a[0]);
+	v.SetElem(1, a[1]);
+	v.SetElem(2, a[2]);
+	EXPECT_EQ(v.GetElem(0), a[0]);
+	EXPECT_EQ(v.GetElem(1), a[1]);
+	EXPECT_EQ(v.GetElem(2), a[2]);
 }
 
 TEST(Vector, vector_plus_vector_and_plus_equal)

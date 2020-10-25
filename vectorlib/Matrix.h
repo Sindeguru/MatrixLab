@@ -11,14 +11,12 @@ class TMatrix : public Vector<Vector<T>>
 {
 protected:
   Vector<T>* arr;
+
 public:
   TMatrix(int s = 3);
-  TMatrix(int s, T el);
-  TMatrix(TMatrix<T>& A);
+  //TMatrix(int s, T el);
+  TMatrix(TMatrix<T>& A); //coopirate
   ~TMatrix();
-
-  void SetObj(int a, int b, T ab);
-  T GetObj(int a, int b);
 
   TMatrix<T>& operator = (const TMatrix<T>& A);
   TMatrix<T> operator + (const TMatrix<T>& A);
@@ -43,61 +41,117 @@ public:
 template<class T>
 inline TMatrix<T>::TMatrix(int s) : Vector<Vector<T>>(s)
 {
-
+  if (s > MAX_MATRIX_SIZE) throw logic_error("");
+  for (int i = 0; i < this->length - this->si; i++)
+  {
+    Vector<T>res(s - i, i);
+    this->vec[i] = res;
+  }
 }
 
+/*
 template<class T>
 inline TMatrix<T>::TMatrix(int s, T el) : Vector<Vector<T>>(s)
 {
-
+  if ((s < 0) || (s > MAX_MATRIX_SIZE)) throw logic_error("Incorrect");
+  arr = new Vector<T>[s];
+  for (int i = 0; i < s; i++)
+  {   
+    Vector<T> v(s - i, i);
+    arr[i] = v;
+    for (int j = 0; j < i; j++)
+      arr[i].SetElem(j, 0);
+  }
 }
-
+*/
 
 template<class T>
 inline TMatrix<T>::TMatrix(TMatrix<T>& A) : Vector<Vector<T>>(A)
 {
+  for (int i = this->si; i < this->length; i++)
+  {
+    Vector<T>res(A[i]);
+    (*this)[i] = res;
+  }
 
+  length = A.length;
+
+  arr = new Vector<T>[length];
+  for (int i = 0; i < length; i++)
+  {
+    arr[i] = A.arr[i];
+  }
 }
- 
 
 template<class T>
 inline TMatrix<T>::~TMatrix()
 {
-
-}
-
-template<class T>
-inline void TMatrix<T>::SetObj(int a, int b, T ab)
-{
-
-}
-
-template<class T>
-inline T TMatrix<T>::GetObj(int a, int b)
-{
-
+ // delete[]arr;
 }
 
 template<class T>
 inline TMatrix<T>& TMatrix<T>::operator=(const TMatrix<T>& A)
 {
+  if (&A == this)
+  {
+    return (*this);
+  }
+  if (this->GetLength() == A.GetLength())
+  {
+    for (int i = 0; i < this->length - this->si; i++)
+    {
+      (*this).vec[i] = A.vec[i];
+    }
+    return(*this);
+  }
+  delete[]vec;
+  vec = new Vector<T>[A.GetLength() - A.GetSI()];
 
+  (*this).si = A.si;
+  (*this).si = A.si;
+  for (int i = (*this).GetSI(); i < (*this).GetLength(); i++)
+  {
+    (*this)[i] = A[i];
+  }
+  return (*this);
 }
 
 template<class T>
 inline TMatrix<T> TMatrix<T>::operator+(const TMatrix<T>& A)
 {
+  TMatrix<T> tmp(*this);
 
+  for (int i = 0; i < this->length-si; i++)
+    tmp.x[i] = tmp.x[i] + A.x[i];
+
+  return tmp;
 }
 
 template<class T>
 inline TMatrix<T> TMatrix<T>::operator-(const TMatrix<T>& A)
 {
+  TMatrix<T> tmp(*this);
 
+  for (int i = 0; i < this->length-si; i++)
+    tmp.x[i] = tmp.x[i] - A.x[i];
+
+  return tmp;
 }
 
 template<class T>
 inline int TMatrix<T>::operator==(TMatrix<T>& A)
 {
-
+  if (this == &A) return 1;
+  if (((*this).GetSI() == A.GetSI()) && ((*this).GetLength() == A.GetLength()))
+  {
+    for (int i = A.GetSI(); i < A.GetLength(); i++)
+    {
+      if ((*this)[i] != A[i])
+      {
+        return 0;
+      }
+    }
+    return 1;
+  }
+  return 0;
 }

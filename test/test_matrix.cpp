@@ -39,13 +39,6 @@ TEST(TMatrix, copied_matrix_is_equal_to_source_one)
 
 TEST(TMatrix, can_get_size)
 {
-  TMatrix<int> m(10, 10);
+  TMatrix<int> m(10);
   EXPECT_EQ(m.GetLength(), 10);
-}
-
-TEST(TMatrix, can_set_and_get_element)
-{
-  TMatrix<int> m(10, 10);
-  m.SetObj(0,0, 19);
-  EXPECT_EQ(m.GetObj(0,0), 19);
 }
